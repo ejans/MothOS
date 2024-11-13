@@ -7,10 +7,11 @@ public:
   int arpNum;
   int delay;
   int octave;
+  bool overdrive;
   int recOctave;
   Voice();
   int UpdateVoice();
-    int phaserMult;
+  int phaserMult;
   int lowPassMult;
   int reverbMult;
   int chordMult;
@@ -25,6 +26,9 @@ public:
   void SetEnvelopeLength(int val);
   void SetEffectNum(int val);
   void ResetEffects();
+  int volume;
+  bool soloMute;
+  bool mute;
 
 private:
   int noteFreqLookup[48];
@@ -58,7 +62,6 @@ private:
   long sampleIndex;
   int sampleIndexNext;
   int subSampleIndex;
-  int volume;
   int volumeNum;
   int ReadWaveform();
   int ReadDrumWaveform();

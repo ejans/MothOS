@@ -22,7 +22,6 @@ Tracker::Tracker() {
 
 int Tracker::UpdateTracker() {
 
-
   float curTime = millis();
   float delta = curTime - lastMillis;
   tempoBlink = 0;
@@ -37,6 +36,9 @@ int Tracker::UpdateTracker() {
     if (barCount > 3) {
       tempoBlink = 30;
       barCount = 0;
+      if (!pressedOnce) {
+        SetNote(7, 0);
+      }
     }
 
     for (int i = 0; i < 4; i++) {
@@ -70,7 +72,7 @@ int Tracker::UpdateTracker() {
 
   for (int i = 0; i < 4; i++) {
     voices[i].bps = bps;
-    int samp = voices[i].UpdateVoice() / (3 + masterVolume * 5);
+    int samp = voices[i].UpdateVoice() / (2 + masterVolume * 5);
     sample += samp;
     lastSamples[i] = samp;
   }
@@ -131,10 +133,26 @@ void Tracker::SetCommand(char command, int val) {
       break;
     case 'V':
       if (val == 3) {
-        BuildOLEDHintString(String("Overdrive"));
+        SoloTrack(false);
+
+      } else {
+        SetVolume(val);
+        if (val == 2) {
+          if (voices[selectedTrack].overdrive) {
+            BuildOLEDHintString(String("ODrv On"));
+          }else{
+            BuildOLEDHintString(String("ODrv Off"));
+          }
+        } else if (val == 0) {
+          if (voices[selectedTrack].mute) {
+            BuildOLEDHintString(String("Mute"));
+          }else{
+            BuildOLEDHintString(String("Unmute"));
+          }
+        } else {
+          BuildOLEDHintString(String("Volume: " + String(voices[selectedTrack].volume)));
+        }
       }
-      SetVolume(val);
-      BuildOLEDHintString(String("Volume: " + String(val + 1)));
       break;
     case 'D':
       SetEffect(val + 4);
@@ -187,8 +205,12 @@ void Tracker::SetCommand(char command, int val) {
       BuildOLEDHintString(String("New Song: " + String((32 * (val + 1)))));
       break;
     case 'P':
-      BuildOLEDHintString(String("Recording: " + String((bool)isPlaying)));
       TogglePlayStop();
+      if (isPlaying) {
+        BuildOLEDHintString(String("Rec On"));
+      } else {
+        BuildOLEDHintString(String("Rec Off"));
+      }
       break;
     case 'I':
       currentVoice = val;
@@ -243,6 +265,28 @@ void Tracker::SetCommand(char command, int val) {
   }
 }
 
+void Tracker::SoloTrack(bool repeat) {
+  if (!repeat) {
+    solo = !solo;
+  }
+
+  if (solo) {
+    for (int i = 0; i < 4; i++) {
+      if (i == selectedTrack) {
+        voices[i].soloMute = false;
+      } else {
+        voices[i].soloMute = true;
+      }
+    }
+    BuildOLEDHintString(String("Solo On"));
+  } else {
+    for (int i = 0; i < 4; i++) {
+      voices[i].soloMute = false;
+    }
+    BuildOLEDHintString(String("Solo Off"));
+  }
+}
+
 void Tracker::SetEffect(int val) {
   voices[selectedTrack].SetEffectNum(val);
 };
@@ -274,7 +318,7 @@ void Tracker::SetVolume(int val) {
 };
 
 void Tracker::SetNote(int val, int track) {
-  if (isPlaying) {
+  if (isPlaying && pressedOnce) {
     //one behind trick
     tracks[track][trackIndex] = val + 1;
     trackOctaves[track][trackIndex] = voices[selectedTrack].octave;
@@ -283,11 +327,11 @@ void Tracker::SetNote(int val, int track) {
   } else {
     voices[track].SetNote(val, false, -1, currentVoice);
   }
-  
 };
 
 void Tracker::SetTrackNum(int val) {
   selectedTrack = val;
+  SoloTrack(true);
 };
 
 void Tracker::ClearTrackNum(int val) {
@@ -365,17 +409,17 @@ void Tracker::ClearAll(int val) {
   isPlaying = true;
   pressedOnce = false;
   allPatternPlay = false;
+  currentVoice = 0;
   String("DRUMS").toCharArray(oledInstString, 6);
   for (int j = 0; j < 4; j++) {
     for (int i = 0; i < 512; i++) {
-
       tracks[j][i] = 0;
       trackInstruments[j][i] = 0;
     }
     voices[j].SetDelay(0);
     voices[j].ResetEffects();
     voices[j].SetEnvelopeNum(0);
-    voices[j].SetVolume(2);
+    voices[j].volume = 2;
     voices[j].SetOctave(1);
   }
   patternLength = 32 + (32 * val);
