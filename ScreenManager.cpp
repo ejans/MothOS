@@ -229,9 +229,14 @@ void ScreenManager::UpdateMainScreen(Tracker &tracker, U8G2_SSD1306_128X64_NONAM
   s += "/4";
   s.toCharArray(buf, 6);
   screen.drawStr(100, 63, buf);
+  s = String(tracker.selectedTrack + 1);
+  s += "/4";
+  s.toCharArray(buf, 6);
+  screen.drawStr(100, 44, buf);
   screen.setFont(u8g2_font_6x13_tf);
   screen.drawStr(76, 63, "PAT:");
   screen.drawStr(4, 10, tracker.oledInstString);
+  screen.drawStr(64, 44, "TRACK:");
   char buff[6];
   String("OC:" + String(tracker.voices[tracker.selectedTrack].octave)).toCharArray(buff, 6);
   screen.drawStr(4, 22, buff);
