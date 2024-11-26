@@ -109,10 +109,10 @@ void loop() {
   // New i2s only wants to write bytes out, so we need to split the sample before writing
   // Copy the high and low bytes of our 16bit sample into a buffer and write that
   byte outbuf[2];
-  //outbuf[0] = lowByte(tracker.sample);
-  //outbuf[1] = highByte(tracker.sample);
-  outbuf[0] = lowByte(tracker.sample/128);
-  outbuf[1] = highByte(tracker.sample/128);
+  outbuf[0] = lowByte(tracker.sample);
+  outbuf[1] = highByte(tracker.sample);
+  //outbuf[0] = lowByte(tracker.sample/128);
+  //outbuf[1] = highByte(tracker.sample/128);
   i2s.write(outbuf, 2);
 
   int tempoBlink = tracker.tempoBlink;
