@@ -5,7 +5,7 @@
 
 //MothSynth led manager init
 #include "LedManager.h"
-LedManager ledManager = LedManager(14, 15, 16, 17);
+LedManager ledManager = LedManager(48, 48, 48, 48);
 
 //MothSynth input manager init
 #include "InputManager.h"
@@ -27,8 +27,8 @@ char keys[ROWS][COLS] = {
   { 'A', 'B', 'C', 'D' }
 };
 
-byte rowPins[ROWS] = { 4, 3, 2, 1 };
-byte colPins[COLS] = { 5, 6, 7, 8 };
+byte rowPins[ROWS] = { 11, 10, 9, 8 };
+byte colPins[COLS] = { 6, 7, 13, 12 };
 Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS);
 
 //i2s sound
@@ -42,7 +42,8 @@ const int sampleRate = 44100;  // sample rate in Hz
 #include <Wire.h>
 
 
-U8G2_SSD1306_128X64_NONAME_1_HW_I2C screen = U8G2_SSD1306_128X64_NONAME_1_HW_I2C(U8G2_R0, /* reset=*/U8X8_PIN_NONE, /* clock=*/13, /* data=*/12);
+//U8G2_SSD1306_128X64_NONAME_1_HW_I2C screen = U8G2_SSD1306_128X64_NONAME_1_HW_I2C(U8G2_R0, /* reset=*/U8X8_PIN_NONE, /* clock=*/5, /* data=*/4);
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C screen = U8G2_SSD1306_128X64_NONAME_1_HW_I2C(U8G2_R2, /* reset=*/U8X8_PIN_NONE, /* clock=*/5, /* data=*/4);
 ScreenManager screenManager = ScreenManager();
 
 //OLED Helers
@@ -79,7 +80,8 @@ void setup() {
   keypad.setDebounceTime(0);
 
   //i2s.setPins(9, 10, 11);
-  i2s.setPins(10, 11, 9);
+  //i2s.setPins(1, 2, 3); // BCLK, LCK, DOUT
+  i2s.setPins(3, 1, 2); // LCK, DIN, BCK
   if (!i2s.begin(I2S_MODE_STD, sampleRate, I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_MONO)) {
     while (1) {};
   }
