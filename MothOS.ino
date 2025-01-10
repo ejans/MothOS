@@ -1,11 +1,14 @@
 //IMPORTANT: COMMENT OUT ISOLED BELOW IF NOT USING ACTUAL OLED
 #define ISOLED
+#define LED 48
 
 #include <Arduino.h>
 
 //MothSynth led manager init
 #include "LedManager.h"
-LedManager ledManager = LedManager(48, 48, 48, 48);
+//LedManager ledManager = LedManager(LED, LED, LED, LED);
+LedManager ledManager = LedManager(49, 49, 49, 49);
+
 
 //MothSynth input manager init
 #include "InputManager.h"
@@ -54,6 +57,9 @@ int volumeBars[4];
 
 void setup() {
 
+  //Disable red led
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, LOW);
   noteChars[0] = String("C_");
   noteChars[1] = String("C#");
   noteChars[2] = String("D_");
@@ -81,7 +87,7 @@ void setup() {
 
   //i2s.setPins(9, 10, 11);
   //i2s.setPins(1, 2, 3); // BCLK, LCK, DOUT
-  i2s.setPins(3, 1, 2); // LCK, DIN, BCK
+  i2s.setPins(3, 1, 2); // BCK, LCK, DIN 
   if (!i2s.begin(I2S_MODE_STD, sampleRate, I2S_DATA_BIT_WIDTH_16BIT, I2S_SLOT_MODE_MONO)) {
     while (1) {};
   }
@@ -111,10 +117,10 @@ void loop() {
   // New i2s only wants to write bytes out, so we need to split the sample before writing
   // Copy the high and low bytes of our 16bit sample into a buffer and write that
   byte outbuf[2];
-  outbuf[0] = lowByte(tracker.sample);
-  outbuf[1] = highByte(tracker.sample);
-  //outbuf[0] = lowByte(tracker.sample/128);
-  //outbuf[1] = highByte(tracker.sample/128);
+  //outbuf[0] = lowByte(tracker.sample);
+  //outbuf[1] = highByte(tracker.sample);
+  outbuf[0] = lowByte(tracker.sample/2);
+  outbuf[1] = highByte(tracker.sample/2);
   i2s.write(outbuf, 2);
 
   int tempoBlink = tracker.tempoBlink;

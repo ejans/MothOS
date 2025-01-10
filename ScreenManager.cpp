@@ -108,10 +108,10 @@ bool ScreenManager::UpdateInstructionsScreen(Tracker &tracker, U8G2_SSD1306_128X
         screen.drawRFrame(x * 32, y * 16, 31, 16, 2);
       }
     }
-    screen.drawStr(xs * 0 + marginleft, ys * 0 + margintop, "VOL1");
-    screen.drawStr(xs * 1 + marginleft, ys * 0 + margintop, "VOL2");
-    screen.drawStr(xs * 2 + marginleft, ys * 0 + margintop, "VOL3");
-    screen.drawStr(xs * 3 + marginleft, ys * 0 + margintop, "OVDR");
+    screen.drawStr(xs * 0 + marginleft, ys * 0 + margintop, "MUTE");
+    screen.drawStr(xs * 1 + marginleft, ys * 0 + margintop, "VOL");
+    screen.drawStr(xs * 2 + marginleft, ys * 0 + margintop, "OVDR");
+    screen.drawStr(xs * 3 + marginleft, ys * 0 + margintop, "SOLO");
     screen.drawStr(xs * 0 + marginleft, ys * 1 + margintop, "ENV1");
     screen.drawStr(xs * 1 + marginleft, ys * 1 + margintop, "ENV2");
     screen.drawStr(xs * 2 + marginleft, ys * 1 + margintop, "ENV3");
@@ -229,6 +229,7 @@ void ScreenManager::UpdateMainScreen(Tracker &tracker, U8G2_SSD1306_128X64_NONAM
     s += "/" + String(tracker.patternLength);
     char buf[6];
     s.toCharArray(buf, 6);
+    screen.setFont(u8g2_font_6x13_tf);
     screen.drawStr(4, 63, buf);
   }
   
@@ -237,11 +238,12 @@ void ScreenManager::UpdateMainScreen(Tracker &tracker, U8G2_SSD1306_128X64_NONAM
   s += "/4";
   s.toCharArray(buf, 6);
   screen.drawStr(100, 63, buf);
+  screen.setFont(u8g2_font_6x13_tf);
   s = String(tracker.selectedTrack + 1);
   s += "/4";
   s.toCharArray(buf, 6);
   screen.drawStr(100, 44, buf);
-  screen.setFont(u8g2_font_6x13_tf);
+  //screen.setFont(u8g2_font_6x13_tf);
   screen.drawStr(76, 63, "PAT:");
   screen.drawStr(4, 10, tracker.oledInstString);
   screen.drawStr(64, 44, "TRACK:");

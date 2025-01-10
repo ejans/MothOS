@@ -2,6 +2,27 @@
 * ESP32 S3 with 512kb RAM and 4MB Flash Required if building DIY MothSynths
 * When compiling sketch, select PARTITION SCHEME / HUGE APP from Arduino IDE tools menu, otherwise the app wont fit on your esp32
 
+# Arduino:
+* Get arduino appimage from here: https://www.arduino.cc/en/software
+* In download location make file executable:
+>$ chmod +x arduino-ide\*.AppImage
+* Install python3-serial:
+>$ sudo apt install python3-serial
+* Run arduino:
+>$ ./arduino-ide_2.3.4_Linux_64bit.AppImage
+* Open MothOS.ino inside repo
+* Select board: ESP32S3 Dev Module
+* Install esp32 core (Popup on right lower corner)
+* Install required libraries: Tools => Manage Libraries
+    * Search for Keypad, U8g2, and install
+* Enable USB CDC (Serial active & reporgramming without boot button): Tools => USB CDC on boot: Enable
+* Set Partition Scheme to Huge App: Tools => Partition Scheme => Huge APP
+* Verify
+* Upload
+
+# Own samples:
+* To create your own samples use the following link: https://mothsynth.com/sampleconverter.html
+
 # MothSynth
 MothSynth is an opensource, ultracheap music making platform based on a few components DIY enthusiasts might find in their drawers. Available in pre-assembled, PCB schematic and DIY module forms. Scroll down for GitHub and Schematics.
 
